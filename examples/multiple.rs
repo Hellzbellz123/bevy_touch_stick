@@ -108,6 +108,8 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("knob.png").into(),
                             style: Style {
+                                position_type: PositionType::Absolute,
+                                margin: UiRect::all(Val::Auto),
                                 width: Val::Px(75.),
                                 height: Val::Px(75.),
                                 ..default()
@@ -120,6 +122,8 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("outline.png").into(),
                             style: Style {
+                                position_type: PositionType::Absolute,
+                                margin: UiRect::all(Val::Auto),
                                 width: Val::Px(150.),
                                 height: Val::Px(150.),
                                 ..default()
@@ -155,6 +159,8 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("knob.png").into(),
                             style: Style {
+                                position_type: PositionType::Absolute,
+                                margin: UiRect::all(Val::Auto),
                                 width: Val::Px(75.),
                                 height: Val::Px(75.),
                                 ..default()
@@ -167,6 +173,8 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("outline.png").into(),
                             style: Style {
+                                position_type: PositionType::Absolute,
+                                margin: UiRect::all(Val::Auto),
                                 width: Val::Px(150.),
                                 height: Val::Px(150.),
                                 ..default()

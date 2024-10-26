@@ -1,6 +1,6 @@
 use std::f32::consts::PI;
 
-use bevy::prelude::*;
+use bevy::{prelude::*, color::palettes::css as colors};
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use bevy_touch_stick::{prelude::*, TouchStickUiKnob, TouchStickUiOutline};
 use leafwing_input_manager::prelude::*;
@@ -66,7 +66,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     ..default()
                 },
                 sprite: Sprite {
-                    color: Color::ORANGE,
+                    color: colors::ORANGE.into(),
                     custom_size: Some(Vec2::new(30., 50.)),
                     ..default()
                 },
@@ -82,7 +82,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     ..default()
                 },
                 sprite: Sprite {
-                    color: Color::ORANGE,
+                    color: colors::ORANGE.into(),
                     custom_size: Some(Vec2::splat(50. / f32::sqrt(2.))),
                     ..default()
                 },
@@ -99,7 +99,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             TouchStickUiBundle {
                 stick: TouchStick {
                     id: Stick::Left,
-                    stick_type: TouchStickType::Fixed,
+                    stick_type: TouchStickType::Dynamic,
                     ..default()
                 },
                 // configure the interactable area through bevy_ui
@@ -122,6 +122,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         width: Val::Px(75.),
                         height: Val::Px(75.),
+                        margin: UiRect::all(Val::Auto),
+                        position_type: PositionType::Absolute,
                         ..default()
                     },
                     ..default()
@@ -134,6 +136,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         width: Val::Px(150.),
                         height: Val::Px(150.),
+                        margin: UiRect::all(Val::Auto),
+                        position_type: PositionType::Absolute,
                         ..default()
                     },
                     ..default()
@@ -173,6 +177,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         width: Val::Px(75.),
                         height: Val::Px(75.),
+                        position_type: PositionType::Absolute,
+                        margin: UiRect::all(Val::Auto),
                         ..default()
                     },
                     ..default()
@@ -185,6 +191,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         width: Val::Px(150.),
                         height: Val::Px(150.),
+                        position_type: PositionType::Absolute,
+                        margin: UiRect::all(Val::Auto),
                         ..default()
                     },
                     ..default()

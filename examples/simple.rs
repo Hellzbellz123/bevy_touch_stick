@@ -74,6 +74,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         width: Val::Px(75.),
                         height: Val::Px(75.),
+                        margin: UiRect::all(Val::Auto),
+                        position_type: PositionType::Absolute,
                         ..default()
                     },
                     ..default()
@@ -86,6 +88,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     style: Style {
                         width: Val::Px(150.),
                         height: Val::Px(150.),
+                        margin: UiRect::all(Val::Auto),
+                        position_type: PositionType::Absolute,
                         ..default()
                     },
                     ..default()
