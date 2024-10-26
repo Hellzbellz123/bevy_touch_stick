@@ -89,8 +89,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     // background_color: BackgroundColor(colors::ORANGE.into()),
                     image: knob_handle.into(),
                     style: Style {
-                        margin: UiRect::all(Val::Auto),
-                        position_type: PositionType::Absolute,
+                        // REQUIRED style attributes
+                        position_type: PositionType::Absolute, // knob must be positioned absolutely
+                        margin: UiRect::all(Val::Auto), // margin must be set too Val::Auto or the knob wont be centered correctly
                         width: Val::Px(knob_size),
                         height: Val::Px(knob_size),
                         ..default()
@@ -105,6 +106,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                     // background_color: BackgroundColor(colors::PURPLE.into()),
                     image: outline_handle.into(),
                     style: Style {
+                        // REQUIRED style attributes
                         margin: UiRect::all(Val::Auto),
                         position_type: PositionType::Absolute,
                         width: Val::Px(radius),

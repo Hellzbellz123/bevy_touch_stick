@@ -108,8 +108,9 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("knob.png").into(),
                             style: Style {
-                                position_type: PositionType::Absolute,
-                                margin: UiRect::all(Val::Auto),
+                                // REQUIRED style attributes
+                                position_type: PositionType::Absolute, // knob must be positioned absolutely
+                                margin: UiRect::all(Val::Auto), // margin must be set too Val::Auto or the knob wont be centered correctly
                                 width: Val::Px(75.),
                                 height: Val::Px(75.),
                                 ..default()
@@ -122,6 +123,7 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("outline.png").into(),
                             style: Style {
+                                // REQUIRED style attributes
                                 position_type: PositionType::Absolute,
                                 margin: UiRect::all(Val::Auto),
                                 width: Val::Px(150.),
@@ -159,8 +161,9 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("knob.png").into(),
                             style: Style {
-                                position_type: PositionType::Absolute,
-                                margin: UiRect::all(Val::Auto),
+                                // REQUIRED style attributes
+                                position_type: PositionType::Absolute, // knob must be positioned absolutely
+                                margin: UiRect::all(Val::Auto), // margin must be set too Val::Auto or the knob wont be centered correctly
                                 width: Val::Px(75.),
                                 height: Val::Px(75.),
                                 ..default()
@@ -173,6 +176,7 @@ fn create_scene(mut commands: Commands, asset_server: Res<AssetServer>) {
                         ImageBundle {
                             image: asset_server.load("outline.png").into(),
                             style: Style {
+                                // REQUIRED style attributes
                                 position_type: PositionType::Absolute,
                                 margin: UiRect::all(Val::Auto),
                                 width: Val::Px(150.),
