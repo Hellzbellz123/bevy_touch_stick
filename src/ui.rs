@@ -31,8 +31,6 @@ pub struct TouchStickUiBundle<S: StickIdType> {
     pub interaction_area: TouchStickInteractionArea,
     /// Describes the size of the node
     pub node: Node,
-    /// Describes the style including flexbox settings
-    pub style: Style,
     /// The calculated size based on the given image
     pub calculated_size: ContentSize,
     /// Whether this node should block interaction with lower nodes
@@ -78,15 +76,15 @@ const MOVE_PERCENT_RELATIVE: f32 = 0.25_f32;
 #[allow(clippy::type_complexity)]
 pub(crate) fn patch_stick_node<S: StickIdType>(
     uinode_query: Query<
-        (&Node, &TouchStick<S>, &ViewVisibility),
+        (&ComputedNode, &TouchStick<S>, &ViewVisibility),
         (Without<TouchStickUiKnob>, Without<TouchStickUiOutline>),
     >,
     mut knob_ui_query: Query<
-        (&Parent, &mut Style),
+        (&Parent, &mut Node),
         (With<TouchStickUiKnob>, Without<TouchStickUiOutline>),
     >,
     mut outline_ui_query: Query<
-        (&Parent, &mut Style),
+        (&Parent, &mut Node),
         (With<TouchStickUiOutline>, Without<TouchStickUiKnob>),
     >,
 ) {

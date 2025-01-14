@@ -3,7 +3,6 @@ use std::marker::PhantomData;
 use bevy::{
     input::gamepad::{
         GamepadAxisChangedEvent, GamepadConnection, GamepadConnectionEvent, GamepadEvent,
-        GamepadInfo,
     },
     prelude::*,
 };
@@ -33,30 +32,29 @@ impl<S: StickIdType> Plugin for GamepadMappingPlugin<S> {
 }
 
 /// HACK: chosen at random, we're betting on no collisions with gilrs gamepads
-/// needs to be below `u32::MAX` to work on 32bit platforms.
-const TOUCH_GAMEPAD_ID: usize = 3407632091;
-
-const TOUCH_GAMEPAD: Gamepad = Gamepad {
-    id: TOUCH_GAMEPAD_ID,
-};
+const TOUCH_GAMEPAD_ID: u16 = 51492;
 
 /// Mapping of a [`TouchStick`] to bevy gamepad axes.
 ///
 /// Adding this component to a [`TouchStick`] will create an emulated gamepad through `bevy_input`.
 #[derive(Component, Reflect, Clone, Copy, Debug, Eq, PartialEq)]
-pub struct TouchStickGamepadMapping(pub GamepadAxisType, pub GamepadAxisType);
+pub struct TouchStickGamepadMapping(pub GamepadAxis, pub GamepadAxis);
 
 impl TouchStickGamepadMapping {
     /// Defines default left stick mapping
     pub const LEFT_STICK: Self =
-        TouchStickGamepadMapping(GamepadAxisType::LeftStickX, GamepadAxisType::LeftStickY);
+        TouchStickGamepadMapping(GamepadAxis::LeftStickX, GamepadAxis::LeftStickY);
     /// Defines default right stick mapping
     pub const RIGHT_STICK: Self =
-        TouchStickGamepadMapping(GamepadAxisType::RightStickX, GamepadAxisType::RightStickY);
+        TouchStickGamepadMapping(GamepadAxis::RightStickX, GamepadAxis::RightStickY);
 }
+
+#[derive(Component)]
+pub struct FakeGamepad;
 
 /// The gamepad is connected when the first [`TouchStick`] is added.
 fn connect_gamepad<S: StickIdType>(
+    mut commands: Commands,
     mut gamepad_events: EventWriter<GamepadEvent>,
     sticks: Query<(), (With<TouchStick<S>>, With<TouchStickGamepadMapping>)>,
     mut was_connected: Local<bool>,
@@ -66,16 +64,16 @@ fn connect_gamepad<S: StickIdType>(
     if *was_connected != connected {
         *was_connected = connected;
 
+        let new_gamepad = commands.spawn(FakeGamepad).id();
+
         let connection = if connected {
-            GamepadConnection::Connected(GamepadInfo {
-                name: "bevy_touch_stick".into(),
-            })
+            GamepadConnection::Connected { name: "bevy_touch_stick".to_string(), vendor_id: None, product_id: Some(TOUCH_GAMEPAD_ID) }
         } else {
             GamepadConnection::Disconnected
         };
 
         gamepad_events.send(GamepadEvent::Connection(GamepadConnectionEvent {
-            gamepad: TOUCH_GAMEPAD,
+            gamepad: new_gamepad,
             connection,
         }));
     }
@@ -84,10 +82,15 @@ fn connect_gamepad<S: StickIdType>(
 /// Reads values from touch sticks and sends as bevy input events
 fn send_axis_events<S: StickIdType>(
     mut events: EventWriter<GamepadEvent>,
+    gamepad: Query<Entity, With<FakeGamepad>>,
     sticks: Query<(&TouchStick<S>, &TouchStickGamepadMapping)>,
 ) {
+    let Ok(gamepad) = gamepad.get_single() else {
+        return;
+    };
+
     for (stick, axis_mapping) in &sticks {
-        let gamepad = TOUCH_GAMEPAD;
+        // let gamepad = TOUCH_GAMEPAD;
         let TouchStickGamepadMapping(x_type, y_type) = axis_mapping;
         let Vec2 { x, y } = stick.value;
         trace!("sending axis event {x}, {y}");

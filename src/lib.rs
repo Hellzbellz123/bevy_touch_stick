@@ -43,7 +43,7 @@
 //!
 use bevy::{
     prelude::*,
-    reflect::{GetTypeRegistration, TypePath},
+    reflect::{GetTypeRegistration, TypePath, Typed},
     ui::UiSystem,
 };
 use std::{hash::Hash, marker::PhantomData};
@@ -150,7 +150,7 @@ impl<S> Default for TouchStickPlugin<S> {
     }
 }
 
-impl<S: StickIdType> Plugin for TouchStickPlugin<S> {
+impl<S: StickIdType + Typed> Plugin for TouchStickPlugin<S> {
     fn build(&self, app: &mut bevy::prelude::App) {
         app.register_type::<TouchStickInteractionArea>()
             .register_type::<TouchStick<S>>()
@@ -210,7 +210,7 @@ impl<
 
 fn map_input_zones_from_ui_nodes<S: StickIdType>(
     mut interaction_areas: Query<
-        (&mut TouchStick<S>, &GlobalTransform, &Node),
+        (&mut TouchStick<S>, &GlobalTransform, &ComputedNode),
         With<TouchStickInteractionArea>,
     >,
 ) {
