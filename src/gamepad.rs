@@ -72,7 +72,7 @@ fn connect_gamepad<S: StickIdType>(
             GamepadConnection::Disconnected
         };
 
-        gamepad_events.send(GamepadEvent::Connection(GamepadConnectionEvent {
+        gamepad_events.write(GamepadEvent::Connection(GamepadConnectionEvent {
             gamepad: new_gamepad,
             connection,
         }));
@@ -85,7 +85,7 @@ fn send_axis_events<S: StickIdType>(
     gamepad: Query<Entity, With<FakeGamepad>>,
     sticks: Query<(&TouchStick<S>, &TouchStickGamepadMapping)>,
 ) {
-    let Ok(gamepad) = gamepad.get_single() else {
+    let Ok(gamepad) = gamepad.single() else {
         return;
     };
 
@@ -100,10 +100,10 @@ fn send_axis_events<S: StickIdType>(
         // let axis_settings = gamepad_settings.get_axis_settings(axis);
         // // Only send events that pass the user-defined change threshold
         // if let Some(filtered_value) = axis_settings.filter(raw_value, old_value) {
-        // events.send(GamepadAxisChangedEvent::new(gamepad, axis_type, filtered_value).into());
+        // events.write(GamepadAxisChangedEvent::new(gamepad, axis_type, filtered_value).into());
         // }
 
-        events.send(GamepadAxisChangedEvent::new(gamepad, *x_type, x).into());
-        events.send(GamepadAxisChangedEvent::new(gamepad, *y_type, y).into());
+        events.write(GamepadAxisChangedEvent::new(gamepad, *x_type, x).into());
+        events.write(GamepadAxisChangedEvent::new(gamepad, *y_type, y).into());
     }
 }

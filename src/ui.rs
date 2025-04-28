@@ -80,17 +80,17 @@ pub(crate) fn patch_stick_node<S: StickIdType>(
         (Without<TouchStickUiKnob>, Without<TouchStickUiOutline>),
     >,
     mut knob_ui_query: Query<
-        (&Parent, &mut Node),
+        (&ChildOf, &mut Node),
         (With<TouchStickUiKnob>, Without<TouchStickUiOutline>),
     >,
     mut outline_ui_query: Query<
-        (&Parent, &mut Node),
+        (&ChildOf, &mut Node),
         (With<TouchStickUiOutline>, Without<TouchStickUiKnob>),
     >,
 ) {
 
     for (knob_parent, mut style) in &mut knob_ui_query {
-        if let Ok((uinode, stick, visibility)) = uinode_query.get(**knob_parent) {
+        if let Ok((uinode, stick, visibility)) = uinode_query.get(knob_parent.parent()) {
             if stick.stick_type == TouchStickType::Floating {
                 if stick.value != Vec2::ZERO {
                     style.display = Display::Flex;
@@ -140,7 +140,7 @@ pub(crate) fn patch_stick_node<S: StickIdType>(
     }
     
     for (outline_parent, mut style) in &mut outline_ui_query {
-        if let Ok((uinode, stick, visibility)) = uinode_query.get(**outline_parent) {
+        if let Ok((uinode, stick, visibility)) = uinode_query.get(outline_parent.parent()) {
             if stick.stick_type == TouchStickType::Floating {
                 if stick.value != Vec2::ZERO {
                     style.display = Display::Flex;

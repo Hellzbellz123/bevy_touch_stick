@@ -29,7 +29,7 @@ pub(crate) fn update_sticks_from_drag_events<S: StickIdType>(
                         stick.drag_start = *position;
                         stick.drag_position = *position;
                         stick.value = Vec2::ZERO;
-                        stick_events.send(TouchStickEvent {
+                        stick_events.write(TouchStickEvent {
                             id: stick.id.clone(),
                             event: TouchStickEventType::Press,
                             value: Vec2::ZERO,
@@ -59,7 +59,7 @@ pub(crate) fn update_sticks_from_drag_events<S: StickIdType>(
                     stick.drag_start = Vec2::ZERO;
                     stick.drag_position = Vec2::ZERO;
                     stick.value = Vec2::ZERO;
-                    stick_events.send(TouchStickEvent {
+                    stick_events.write(TouchStickEvent {
                         id: stick.id.clone(),
                         event: TouchStickEventType::Release,
                         value: Vec2::ZERO,
@@ -73,7 +73,7 @@ pub(crate) fn update_sticks_from_drag_events<S: StickIdType>(
         if (stick.value.x.abs() >= stick.dead_zone || stick.value.y.abs() >= stick.dead_zone)
             && stick.drag_id.is_some()
         {
-            stick_events.send(TouchStickEvent {
+            stick_events.write(TouchStickEvent {
                 id: stick.id.clone(),
                 event: TouchStickEventType::Drag,
                 value: stick.value,
@@ -94,19 +94,19 @@ pub(crate) fn send_drag_events_from_touch(
     for (id, phase, position) in &touches {
         match phase {
             TouchPhase::Started => {
-                send_values.send(DragEvent::Start {
+                send_values.write(DragEvent::Start {
                     id: *id,
                     position: *position,
                 });
             }
             TouchPhase::Moved => {
-                send_values.send(DragEvent::Drag {
+                send_values.write(DragEvent::Drag {
                     id: *id,
                     position: *position,
                 });
             }
             TouchPhase::Ended | TouchPhase::Canceled => {
-                send_values.send(DragEvent::End { id: *id });
+                send_values.write(DragEvent::End { id: *id });
             }
         }
     }
@@ -118,7 +118,7 @@ pub(crate) fn send_drag_events_from_mouse(
     mut drag_events: EventWriter<DragEvent>,
     primary_window: Query<&Window, With<PrimaryWindow>>,
 ) {
-    let Ok(primary_window) = primary_window.get_single() else {
+    let Ok(primary_window) = primary_window.single() else {
         return
     };
 
@@ -126,11 +126,11 @@ pub(crate) fn send_drag_events_from_mouse(
 
     for mouse_event in mouse_events.read() {
         if mouse_event.button == MouseButton::Left && mouse_event.state == ButtonState::Released {
-            drag_events.send(DragEvent::End { id: 0 });
+            drag_events.write(DragEvent::End { id: 0 });
         }
 
         if mouse_event.button == MouseButton::Left && mouse_event.state == ButtonState::Pressed {
-            drag_events.send(DragEvent::Start {
+            drag_events.write(DragEvent::Start {
                 id: 0,
                 position: position.unwrap_or_default(),
             });
@@ -142,7 +142,7 @@ pub(crate) fn send_drag_events_from_mouse(
         // but we won't get the position. So in that case, we stop sending drag
         // events.
         if let Some(position) = position {
-            drag_events.send(DragEvent::Drag { id: 0, position });
+            drag_events.write(DragEvent::Drag { id: 0, position });
         }
     }
 }
