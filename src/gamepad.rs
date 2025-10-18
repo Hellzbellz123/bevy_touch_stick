@@ -55,7 +55,7 @@ pub struct FakeGamepad;
 /// The gamepad is connected when the first [`TouchStick`] is added.
 fn connect_gamepad<S: StickIdType>(
     mut commands: Commands,
-    mut gamepad_events: EventWriter<GamepadEvent>,
+    mut gamepad_events: MessageWriter<GamepadEvent>,
     sticks: Query<(), (With<TouchStick<S>>, With<TouchStickGamepadMapping>)>,
     mut was_connected: Local<bool>,
 ) {
@@ -81,7 +81,7 @@ fn connect_gamepad<S: StickIdType>(
 
 /// Reads values from touch sticks and sends as bevy input events
 fn send_axis_events<S: StickIdType>(
-    mut events: EventWriter<GamepadEvent>,
+    mut events: MessageWriter<GamepadEvent>,
     gamepad: Query<Entity, With<FakeGamepad>>,
     sticks: Query<(&TouchStick<S>, &TouchStickGamepadMapping)>,
 ) {

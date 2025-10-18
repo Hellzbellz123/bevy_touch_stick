@@ -43,8 +43,7 @@
 //!
 use bevy::{
     prelude::*,
-    reflect::{GetTypeRegistration, TypePath, Typed},
-    ui::UiSystem,
+    reflect::{GetTypeRegistration, TypePath, Typed}, ui::UiSystems,
 };
 use std::{hash::Hash, marker::PhantomData};
 
@@ -156,8 +155,8 @@ impl<S: StickIdType + Typed> Plugin for TouchStickPlugin<S> {
             .register_type::<TouchStick<S>>()
             .register_type::<TouchStickType>()
             .register_type::<TouchStickEventType>()
-            .add_event::<TouchStickEvent<S>>()
-            .add_event::<DragEvent>()
+            .add_message::<TouchStickEvent<S>>()
+            .add_message::<DragEvent>()
             .add_plugins(TouchStickUiPlugin::<S>::default())
             .add_systems(
                 PreUpdate,
@@ -170,7 +169,7 @@ impl<S: StickIdType + Typed> Plugin for TouchStickPlugin<S> {
             .add_systems(PreUpdate, update_sticks_from_drag_events::<S>)
             .add_systems(
                 PostUpdate,
-                map_input_zones_from_ui_nodes::<S>.before(UiSystem::Layout),
+                map_input_zones_from_ui_nodes::<S>.before(UiSystems::Layout),
             );
 
         #[cfg(feature = "gamepad_mapping")]
@@ -235,7 +234,7 @@ pub enum TouchStickEventType {
 }
 
 /// Event sent whenever the [`TouchStick`] is interacted.
-#[derive(Event)]
+#[derive(Event, Message)]
 pub struct TouchStickEvent<S: StickIdType> {
     /// Identification for joystick that sent this event
     id: S,

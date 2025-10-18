@@ -5,7 +5,7 @@ use bevy::{
     window::PrimaryWindow,
 };
 
-#[derive(Event)]
+#[derive(Event, Message)]
 /// Actual device input passed too [`TouchStick`]
 pub(crate) enum DragEvent {
     Start { id: u64, position: Vec2 },
@@ -14,8 +14,8 @@ pub(crate) enum DragEvent {
 }
 
 pub(crate) fn update_sticks_from_drag_events<S: StickIdType>(
-    mut drag_events: EventReader<DragEvent>,
-    mut stick_events: EventWriter<TouchStickEvent<S>>,
+    mut drag_events: MessageReader<DragEvent>,
+    mut stick_events: MessageWriter<TouchStickEvent<S>>,
     mut sticks: Query<&mut TouchStick<S>>,
 ) {
     let input_events = drag_events.read().collect::<Vec<&DragEvent>>();
@@ -83,8 +83,8 @@ pub(crate) fn update_sticks_from_drag_events<S: StickIdType>(
 }
 
 pub(crate) fn send_drag_events_from_touch(
-    mut touch_events: EventReader<TouchInput>,
-    mut send_values: EventWriter<DragEvent>,
+    mut touch_events: MessageReader<TouchInput>,
+    mut send_values: MessageWriter<DragEvent>,
 ) {
     let touches = touch_events
         .read()
@@ -114,8 +114,8 @@ pub(crate) fn send_drag_events_from_touch(
 
 pub(crate) fn send_drag_events_from_mouse(
     mouse_buttons: Res<ButtonInput<MouseButton>>,
-    mut mouse_events: EventReader<MouseButtonInput>,
-    mut drag_events: EventWriter<DragEvent>,
+    mut mouse_events: MessageReader<MouseButtonInput>,
+    mut drag_events: MessageWriter<DragEvent>,
     primary_window: Query<&Window, With<PrimaryWindow>>,
 ) {
     let Ok(primary_window) = primary_window.single() else {
